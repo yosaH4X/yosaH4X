@@ -7,76 +7,80 @@ getgenv().ESP = false
 
 -- UI Native
 local ScreenGui = Instance.new("ScreenGui")
-local Frame = Instance.new("Frame")
-local AFarm = Instance.new("TextButton")
-local ABoss = Instance.new("TextButton")
-local AChest = Instance.new("TextButton")
-local AESP = Instance.new("TextButton")
-local HideBtn = Instance.new("TextButton")
-
 ScreenGui.Parent = game.CoreGui
-Frame.Parent = ScreenGui
-Frame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-Frame.Position = UDim2.new(0.4, 0, 0.3, 0)
-Frame.Size = UDim2.new(0, 200, 0, 350)
+ScreenGui.ResetOnSpawn = false
 
-AFarm.Parent = Frame
-AFarm.BackgroundColor3 = Color3.fromRGB(150, 150, 150)
-AFarm.Position = UDim2.new(0, 10, 0, 10)
-AFarm.Size = UDim2.new(0, 180, 0, 50)
-AFarm.Text = "Auto Farm: OFF"
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, 220, 0, 300)
+MainFrame.Position = UDim2.new(0.4, 0, 0.3, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+MainFrame.BorderSizePixel = 0
+MainFrame.Parent = ScreenGui
+MainFrame.Visible = true
 
-ABoss.Parent = Frame
-ABoss.BackgroundColor3 = Color3.fromRGB(150, 150, 150)
-ABoss.Position = UDim2.new(0, 10, 0, 70)
-ABoss.Size = UDim2.new(0, 180, 0, 50)
-ABoss.Text = "Auto Boss: OFF"
+local UICorner = Instance.new("UICorner", MainFrame)
+UICorner.CornerRadius = UDim.new(0, 10)
 
-AChest.Parent = Frame
-AChest.BackgroundColor3 = Color3.fromRGB(150, 150, 150)
-AChest.Position = UDim2.new(0, 10, 0, 130)
-AChest.Size = UDim2.new(0, 180, 0, 50)
-AChest.Text = "Chest: OFF"
+local UIStroke = Instance.new("UIStroke", MainFrame)
+UIStroke.Color = Color3.fromRGB(255, 255, 255)
+UIStroke.Thickness = 1.5
 
-AESP.Parent = Frame
-AESP.BackgroundColor3 = Color3.fromRGB(150, 150, 150)
-AESP.Position = UDim2.new(0, 10, 0, 190)
-AESP.Size = UDim2.new(0, 180, 0, 50)
-AESP.Text = "ESP: OFF"
+local function createButton(text, posY)
+    local btn = Instance.new("TextButton")
+    btn.Parent = MainFrame
+    btn.Size = UDim2.new(0, 200, 0, 40)
+    btn.Position = UDim2.new(0, 10, 0, posY)
+    btn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+    btn.Text = text .. ": OFF"
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.Font = Enum.Font.SourceSansBold
+    btn.TextSize = 18
+    local corner = Instance.new("UICorner", btn)
+    corner.CornerRadius = UDim.new(0, 8)
+    return btn
+end
 
-HideBtn.Parent = Frame
-HideBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-HideBtn.Position = UDim2.new(0, 10, 0, 250)
-HideBtn.Size = UDim2.new(0, 180, 0, 50)
-HideBtn.Text = "Hide UI"
+local FarmBtn = createButton("Auto Farm", 10)
+local BossBtn = createButton("Auto Boss", 60)
+local ChestBtn = createButton("Chest", 110)
+local ESPBtn = createButton("ESP", 160)
 
-AFarm.MouseButton1Click:Connect(function()
+FarmBtn.MouseButton1Click:Connect(function()
     getgenv().AutoFarm = not getgenv().AutoFarm
-    AFarm.Text = "Auto Farm: " .. (getgenv().AutoFarm and "ON" or "OFF")
+    FarmBtn.Text = "Auto Farm: " .. (getgenv().AutoFarm and "ON" or "OFF")
 end)
 
-ABoss.MouseButton1Click:Connect(function()
+BossBtn.MouseButton1Click:Connect(function()
     getgenv().AutoBoss = not getgenv().AutoBoss
-    ABoss.Text = "Auto Boss: " .. (getgenv().AutoBoss and "ON" or "OFF")
+    BossBtn.Text = "Auto Boss: " .. (getgenv().AutoBoss and "ON" or "OFF")
 end)
 
-AChest.MouseButton1Click:Connect(function()
+ChestBtn.MouseButton1Click:Connect(function()
     getgenv().AutoChest = not getgenv().AutoChest
-    AChest.Text = "Chest: " .. (getgenv().AutoChest and "ON" or "OFF")
+    ChestBtn.Text = "Chest: " .. (getgenv().AutoChest and "ON" or "OFF")
 end)
 
-AESP.MouseButton1Click:Connect(function()
+ESPBtn.MouseButton1Click:Connect(function()
     getgenv().ESP = not getgenv().ESP
-    AESP.Text = "ESP: " .. (getgenv().ESP and "ON" or "OFF")
+    ESPBtn.Text = "ESP: " .. (getgenv().ESP and "ON" or "OFF")
 end)
 
-HideBtn.MouseButton1Click:Connect(function()
-    Frame.Visible = not Frame.Visible
-    if Frame.Visible then
-        HideBtn.Text = "Hide UI"
-    else
-        HideBtn.Text = "Show UI"
-    end
+-- Tombol hide UI
+local ToggleBtn = Instance.new("TextButton")
+ToggleBtn.Parent = ScreenGui
+ToggleBtn.Size = UDim2.new(0, 120, 0, 35)
+ToggleBtn.Position = UDim2.new(0.01, 0, 0.5, 0)
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+ToggleBtn.Text = "Hide UI"
+ToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleBtn.Font = Enum.Font.SourceSansBold
+ToggleBtn.TextSize = 18
+local corner2 = Instance.new("UICorner", ToggleBtn)
+corner2.CornerRadius = UDim.new(0, 8)
+
+ToggleBtn.MouseButton1Click:Connect(function()
+    MainFrame.Visible = not MainFrame.Visible
+    ToggleBtn.Text = MainFrame.Visible and "Hide UI" or "Show UI"
 end)
 
 -- Anti AFK
@@ -89,7 +93,7 @@ pcall(function()
     end)
 end)
 
--- Main loop
+-- Loop utama
 spawn(function()
     while task.wait() do
         if getgenv().AutoFarm then
