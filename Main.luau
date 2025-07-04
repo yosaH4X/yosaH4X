@@ -12,8 +12,8 @@ local Scripts = {
 local fetcher, urls = {}, {}
 local _ENV = (getgenv or getrenv or getfenv)()
 
-urls.Owner = "https://raw.githubusercontent.com/yosaH4X/"
-urls.Repository = urls.Owner .. "Scripts/refs/heads/main/";
+urls.Owner = "https://raw.githubusercontent.com/yosaH4X/yosaH4X/"
+urls.Repository = urls.Owner .. "main/";
 urls.Translator = urls.Repository .. "Translator/"
 urls.Utils = urls.Repository .. "Utils/"
 
