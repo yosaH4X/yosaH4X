@@ -7,7 +7,13 @@ local Window = Library:CreateWindow({
     Title = '🌸 yosaH4X 🌸',
     Center = true,
     AutoShow = true,
+    TabPadding = 3,
+    MenuFadeTime = 0.2
 })
+
+-- Setting ukuran
+Window:SetMinimumSize(Vector2.new(450, 300)) -- kecilin ukuran frame
+Window:Toggle() -- biar langsung muncul
 
 local Tabs = {
     Main = Window:AddTab('Main'),
