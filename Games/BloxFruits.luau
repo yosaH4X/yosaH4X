@@ -4,93 +4,93 @@ local ThemeManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/
 local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/violin-suzutsuki/LinoriaLib/main/addons/SaveManager.lua"))()
 
 local Window = Library:CreateWindow({
-    Title = '🌸 yosaH4X 🌸',
+    Title = "🌸 yosaH4X 🌸",
     Center = true,
     AutoShow = true,
-    TabPadding = 3,
+    TabPadding = 4,
     MenuFadeTime = 0.2
 })
 
--- Setting ukuran
-Window:SetMinimumSize(Vector2.new(450, 300)) -- kecilin ukuran frame
-Window:Toggle() -- biar langsung muncul
+-- Kecil banget
+Window:SetMinimumSize(Vector2.new(400, 250))
+Window:Show()
+
+Library:OnUnload(function()
+    print("Script unloaded.")
+end)
 
 local Tabs = {
-    Main = Window:AddTab('Main'),
-    Farming = Window:AddTab('Farming'),
-    Misc = Window:AddTab('Misc'),
-    Settings = Window:AddTab('Settings'),
+    Main = Window:AddTab("Main"),
+    Farm = Window:AddTab("Farm"),
+    Misc = Window:AddTab("Misc"),
+    Config = Window:AddTab("Config")
 }
 
-local MainGroup = Tabs.Main:AddLeftGroupbox('Welcome')
-MainGroup:AddLabel('Script by yosaH4X')
+local MainBox = Tabs.Main:AddLeftGroupbox("yosaH4X Info")
+MainBox:AddLabel("Script by yosaH4X 💥")
+MainBox:AddDivider()
+MainBox:AddButton("Destroy UI", function()
+    Library:Unload()
+end)
 
--- Toggle variables
 getgenv().AutoFarm = false
 getgenv().AutoBoss = false
-getgenv().Chest = false
+getgenv().AutoChest = false
 getgenv().ESP = false
 
--- Farming toggles
-local FarmGroup = Tabs.Farming:AddLeftGroupbox('Farming Options')
-FarmGroup:AddToggle('AutoFarm', {
-    Text = 'Auto Farm',
+local FarmBox = Tabs.Farm:AddLeftGroupbox("Farm Controls")
+FarmBox:AddToggle("AutoFarm", {
+    Text = "Auto Farm",
     Default = false,
-    Tooltip = 'Farm all enemies',
+    Tooltip = "Enable auto farm mobs",
 }):OnChanged(function(value)
     getgenv().AutoFarm = value
 end)
 
-FarmGroup:AddToggle('AutoBoss', {
-    Text = 'Auto Boss',
+FarmBox:AddToggle("AutoBoss", {
+    Text = "Auto Boss",
     Default = false,
 }):OnChanged(function(value)
     getgenv().AutoBoss = value
 end)
 
-FarmGroup:AddToggle('Chest', {
-    Text = 'Chest',
+FarmBox:AddToggle("AutoChest", {
+    Text = "Auto Chest",
     Default = false,
 }):OnChanged(function(value)
-    getgenv().Chest = value
+    getgenv().AutoChest = value
 end)
 
-FarmGroup:AddToggle('ESP', {
-    Text = 'ESP',
+FarmBox:AddToggle("ESP", {
+    Text = "ESP",
     Default = false,
 }):OnChanged(function(value)
     getgenv().ESP = value
 end)
 
--- Misc example
-local MiscGroup = Tabs.Misc:AddLeftGroupbox('Miscellaneous')
-MiscGroup:AddButton('Teleport to Sea', function()
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0, 100, 0)
+-- Misc
+local MiscBox = Tabs.Misc:AddLeftGroupbox("Extra")
+MiscBox:AddButton("Teleport to Middle", function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0, 150, 0)
 end)
 
--- Save & Theme
+-- Theme & Save
 ThemeManager:SetLibrary(Library)
 SaveManager:SetLibrary(Library)
-SaveManager:BuildConfigSection(Tabs.Settings)
-ThemeManager:ApplyToTab(Tabs.Settings)
-
-Library:Notify('Welcome to yosaH4X!')
-
--- Logic loops
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
+SaveManager:BuildConfigSection(Tabs.Config)
+ThemeManager:ApplyToTab(Tabs.Config)
 
 -- Anti AFK
 pcall(function()
     local vu = game:GetService("VirtualUser")
-    LocalPlayer.Idled:Connect(function()
-        vu:Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+    game:GetService("Players").LocalPlayer.Idled:Connect(function()
+        vu:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
         wait(1)
-        vu:Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+        vu:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
     end)
 end)
 
--- Farming logic
+-- Logic loop
 task.spawn(function()
     while task.wait() do
         if getgenv().AutoFarm then
@@ -98,7 +98,7 @@ task.spawn(function()
                 for _, v in pairs(workspace.Enemies:GetChildren()) do
                     if v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
                         repeat task.wait()
-                            LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 10, 0)
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 10, 0)
                             v.Humanoid.Health = 0
                         until v.Humanoid.Health <= 0 or not getgenv().AutoFarm
                     end
@@ -111,18 +111,18 @@ task.spawn(function()
                 local boss = workspace.Enemies:FindFirstChild("Boss")
                 if boss and boss:FindFirstChild("HumanoidRootPart") and boss.Humanoid.Health > 0 then
                     repeat task.wait()
-                        LocalPlayer.Character.HumanoidRootPart.CFrame = boss.HumanoidRootPart.CFrame * CFrame.new(0, 10, 0)
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = boss.HumanoidRootPart.CFrame * CFrame.new(0, 10, 0)
                         boss.Humanoid.Health = 0
                     until boss.Humanoid.Health <= 0 or not getgenv().AutoBoss
                 end
             end)
         end
 
-        if getgenv().Chest then
+        if getgenv().AutoChest then
             pcall(function()
                 for _, chest in pairs(workspace:GetChildren()) do
                     if chest.Name:match("Chest") then
-                        LocalPlayer.Character.HumanoidRootPart.CFrame = chest.CFrame
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = chest.CFrame
                         wait(0.5)
                     end
                 end
@@ -142,3 +142,5 @@ task.spawn(function()
         end
     end
 end)
+
+Library:Notify("✅ yosaH4X Loaded! Press RightShift to hide/show UI.")
