@@ -1,4 +1,3 @@
--- Load Linoria
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/violin-suzutsuki/LinoriaLib/main/Library.lua"))()
 local ThemeManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/violin-suzutsuki/LinoriaLib/main/addons/ThemeManager.lua"))()
 local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/violin-suzutsuki/LinoriaLib/main/addons/SaveManager.lua"))()
@@ -11,83 +10,77 @@ local Window = Library:CreateWindow({
     MenuFadeTime = 0.2
 })
 
--- Kecil banget
-Window:SetMinimumSize(Vector2.new(400, 250))
+-- Ukuran minimal
+Window:SetMinimumSize(Vector2.new(200, 200))
 Window:Show()
 
 Library:OnUnload(function()
-    print("Script unloaded.")
+    print("Unloaded")
 end)
 
 local Tabs = {
-    Main = Window:AddTab("Main"),
-    Farm = Window:AddTab("Farm"),
-    Misc = Window:AddTab("Misc"),
-    Config = Window:AddTab("Config")
+    Main = Window:AddTab("Main")
 }
 
-local MainBox = Tabs.Main:AddLeftGroupbox("yosaH4X Info")
-MainBox:AddLabel("Script by yosaH4X 💥")
-MainBox:AddDivider()
-MainBox:AddButton("Destroy UI", function()
-    Library:Unload()
-end)
+local MainBox = Tabs.Main:AddLeftGroupbox("Farming")
 
 getgenv().AutoFarm = false
 getgenv().AutoBoss = false
 getgenv().AutoChest = false
 getgenv().ESP = false
 
-local FarmBox = Tabs.Farm:AddLeftGroupbox("Farm Controls")
-FarmBox:AddToggle("AutoFarm", {
+MainBox:AddToggle("AutoFarm", {
     Text = "Auto Farm",
     Default = false,
-    Tooltip = "Enable auto farm mobs",
-}):OnChanged(function(value)
-    getgenv().AutoFarm = value
+}):OnChanged(function(val)
+    getgenv().AutoFarm = val
 end)
 
-FarmBox:AddToggle("AutoBoss", {
+MainBox:AddToggle("AutoBoss", {
     Text = "Auto Boss",
     Default = false,
-}):OnChanged(function(value)
-    getgenv().AutoBoss = value
+}):OnChanged(function(val)
+    getgenv().AutoBoss = val
 end)
 
-FarmBox:AddToggle("AutoChest", {
+MainBox:AddToggle("AutoChest", {
     Text = "Auto Chest",
     Default = false,
-}):OnChanged(function(value)
-    getgenv().AutoChest = value
+}):OnChanged(function(val)
+    getgenv().AutoChest = val
 end)
 
-FarmBox:AddToggle("ESP", {
+MainBox:AddToggle("ESP", {
     Text = "ESP",
     Default = false,
-}):OnChanged(function(value)
-    getgenv().ESP = value
+}):OnChanged(function(val)
+    getgenv().ESP = val
 end)
 
--- Misc
-local MiscBox = Tabs.Misc:AddLeftGroupbox("Extra")
-MiscBox:AddButton("Teleport to Middle", function()
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0, 150, 0)
+MainBox:AddButton("Destroy UI", function()
+    Library:Unload()
 end)
 
--- Theme & Save
 ThemeManager:SetLibrary(Library)
 SaveManager:SetLibrary(Library)
-SaveManager:BuildConfigSection(Tabs.Config)
-ThemeManager:ApplyToTab(Tabs.Config)
+SaveManager:BuildConfigSection(Tabs.Main)
+ThemeManager:ApplyToTab(Tabs.Main)
 
--- Anti AFK
-pcall(function()
-    local vu = game:GetService("VirtualUser")
-    game:GetService("Players").LocalPlayer.Idled:Connect(function()
-        vu:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
-        wait(1)
-        vu:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
-    end)
+Library:Notify("✅ yosaH4X Loaded! Klik tombol icon buat hide/show.")
+
+-- 🌟 Buat tombol floating (Android)
+local button = Instance.new("ImageButton")
+button.Name = "MahiruIcon"
+button.Parent = game:GetService("CoreGui")
+button.BackgroundTransparency = 1
+button.Size = UDim2.new(0, 50, 0, 50)
+button.Position = UDim2.new(0, 20, 0.5, -25)
+button.Image = "rbxassetid://15182747853" -- ganti ID ke gambar Mahiru kalau mau custom
+
+local visible = true
+button.MouseButton1Click:Connect(function()
+    visible = not visible
+    Window:SetVisible(visible)
 end)
 
 -- Logic loop
@@ -105,42 +98,5 @@ task.spawn(function()
                 end
             end)
         end
-
-        if getgenv().AutoBoss then
-            pcall(function()
-                local boss = workspace.Enemies:FindFirstChild("Boss")
-                if boss and boss:FindFirstChild("HumanoidRootPart") and boss.Humanoid.Health > 0 then
-                    repeat task.wait()
-                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = boss.HumanoidRootPart.CFrame * CFrame.new(0, 10, 0)
-                        boss.Humanoid.Health = 0
-                    until boss.Humanoid.Health <= 0 or not getgenv().AutoBoss
-                end
-            end)
-        end
-
-        if getgenv().AutoChest then
-            pcall(function()
-                for _, chest in pairs(workspace:GetChildren()) do
-                    if chest.Name:match("Chest") then
-                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = chest.CFrame
-                        wait(0.5)
-                    end
-                end
-            end)
-        end
-
-        if getgenv().ESP then
-            pcall(function()
-                for _, enemy in pairs(workspace.Enemies:GetChildren()) do
-                    if not enemy:FindFirstChild("Highlight") then
-                        local highlight = Instance.new("Highlight", enemy)
-                        highlight.FillColor = Color3.fromRGB(255, 0, 0)
-                        highlight.OutlineColor = Color3.fromRGB(0, 0, 0)
-                    end
-                end
-            end)
-        end
     end
 end)
-
-Library:Notify("✅ yosaH4X Loaded! Press RightShift to hide/show UI.")
