@@ -1,39 +1,87 @@
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/linoria/linoria/main/library.lua"))()
-local Window = Library:CreateWindow({
-    Title = "yosaH4X ☠️",
-    Center = true,
-    AutoShow = true,
-    Size = UDim2.new(0, 300, 0, 250) -- ⚡️ Ukuran sudah dikecilin
+-- ✅ Load Rayfield UI
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+    Name = "🌸 yosaH4X Blox Fruits",
+    LoadingTitle = "yosaH4X",
+    LoadingSubtitle = "by yosaH4X",
+    ConfigurationSaving = {
+        Enabled = true,
+        FolderName = nil, -- kalau mau, isi nama folder config
+        FileName = "yosaH4XConfig"
+    },
+    Discord = {
+        Enabled = false,
+        Invite = "",
+        RememberJoins = false
+    },
+    KeySystem = false,
+    KeySettings = {
+        Title = "yosaH4X Key",
+        Subtitle = "Key System",
+        Note = "Hubungi yosaH4X buat dapet key",
+        FileName = "yosaKey",
+        SaveKey = true,
+        GrabKeyFromSite = false,
+        Key = "yosaFREE"
+    }
 })
 
--- Section Farming
-local MainTab = Window:AddTab("Main")
-local FarmingGroup = MainTab:AddLeftGroupbox("Farming")
+-- 🌟 Farming Tab
+local FarmingTab = Window:CreateTab("⚔️ Farming", 4483362458)
 
-FarmingGroup:AddToggle("AutoFarm", { Text = "Auto Farm", Default = false })
-FarmingGroup:AddToggle("AutoBoss", { Text = "Auto Boss", Default = false })
-FarmingGroup:AddToggle("AutoChest", { Text = "Chest", Default = false })
-FarmingGroup:AddToggle("ESP", { Text = "ESP", Default = false })
+local AutoFarmToggle = FarmingTab:CreateToggle({
+    Name = "Auto Farm",
+    CurrentValue = false,
+    Flag = "AutoFarm",
+    Callback = function(Value)
+        getgenv().AutoFarm = Value
+        print("Auto Farm:", Value)
+    end
+})
 
--- Add Hide/Show Button
-Library.ToggleKeybind = Enum.KeyCode.RightControl -- Default PC
--- 🔥 Untuk mobile, tambahin tombol custom (contoh Mahiru image button)
+local AutoBossToggle = FarmingTab:CreateToggle({
+    Name = "Auto Boss",
+    CurrentValue = false,
+    Flag = "AutoBoss",
+    Callback = function(Value)
+        getgenv().AutoBoss = Value
+        print("Auto Boss:", Value)
+    end
+})
 
-local UserInputService = game:GetService("UserInputService")
-local player = game.Players.LocalPlayer
-local mouse = player:GetMouse()
+local ChestToggle = FarmingTab:CreateToggle({
+    Name = "Auto Chest",
+    CurrentValue = false,
+    Flag = "AutoChest",
+    Callback = function(Value)
+        getgenv().AutoChest = Value
+        print("Auto Chest:", Value)
+    end
+})
 
-local MahiruButton = Instance.new("ImageButton")
-MahiruButton.Size = UDim2.new(0, 50, 0, 50)
-MahiruButton.Position = UDim2.new(0, 20, 0, 20)
-MahiruButton.Image = "rbxassetid://ID_MAHIRU_IMAGE" -- Ganti ID sesuai gambar Mahiru
-MahiruButton.BackgroundTransparency = 1
-MahiruButton.Parent = game.CoreGui
+local ESPToggle = FarmingTab:CreateToggle({
+    Name = "ESP",
+    CurrentValue = false,
+    Flag = "ESP",
+    Callback = function(Value)
+        getgenv().ESP = Value
+        print("ESP:", Value)
+    end
+})
 
-MahiruButton.MouseButton1Click:Connect(function()
-    Library:Toggle()
-end)
-
--- Drag Window
-Window.Object.Active = true
-Window.Object.Draggable = true
+-- 🌸 Notif Welcome
+Rayfield:Notify({
+    Title = "yosaH4X",
+    Content = "Welcome to yosaH4X Script!",
+    Duration = 6.5,
+    Image = 4483362458,
+    Actions = {
+        Ignore = {
+            Name = "Oke!",
+            Callback = function()
+                print("Selamat datang di yosaH4X!")
+            end
+        }
+    }
+})
