@@ -1,8 +1,8 @@
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local CoreGui = game:GetService("CoreGui")
+local UserInputService = game:GetService("UserInputService")
 
--- ENV
 getgenv().AutoFarm = false
 getgenv().AutoBoss = false
 getgenv().Chest = false
@@ -17,134 +17,76 @@ local ScreenGui = Instance.new("ScreenGui", CoreGui)
 ScreenGui.Name = "yosaH4X_UI"
 ScreenGui.ResetOnSpawn = false
 
--- Sidebar
-local Sidebar = Instance.new("Frame", ScreenGui)
-Sidebar.Size = UDim2.new(0, 150, 1, 0)
-Sidebar.Position = UDim2.new(0, 0, 0, 0)
-Sidebar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+-- Main Frame
+local MainFrame = Instance.new("Frame", ScreenGui)
+MainFrame.Size = UDim2.new(0, 450, 0, 400)
+MainFrame.Position = UDim2.new(0.3, 0, 0.2, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+MainFrame.Active = true
+MainFrame.Draggable = true
 
-local Header = Instance.new("TextLabel", Sidebar)
-Header.Size = UDim2.new(1, 0, 0, 50)
+local UICorner = Instance.new("UICorner", MainFrame)
+UICorner.CornerRadius = UDim.new(0, 8)
+
+-- Header
+local Header = Instance.new("TextLabel", MainFrame)
+Header.Size = UDim2.new(1, 0, 0, 40)
 Header.Text = "🌸 yosaH4X 🌸"
 Header.TextColor3 = Color3.new(1,1,1)
 Header.Font = Enum.Font.GothamBold
-Header.TextSize = 16
-Header.BackgroundTransparency = 1
+Header.TextSize = 18
+Header.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 
-local Buttons = {
-    "Main",
-    "Farming",
-    "Items",
-    "Setting",
-    "Local Player",
-    "Hold Skill",
-    "Sea Event"
-}
+-- Hide Button (icon)
+local HideButton = Instance.new("ImageButton", MainFrame)
+HideButton.Size = UDim2.new(0, 30, 0, 30)
+HideButton.Position = UDim2.new(1, -35, 0, 5)
+HideButton.Image = "rbxassetid://13533617921"  -- ganti dengan foto Mahiru jika mau
+HideButton.BackgroundTransparency = 1
 
-local Panels = {}
-
--- Main panel container
-local MainPanel = Instance.new("Frame", ScreenGui)
-MainPanel.Size = UDim2.new(0, 400, 0, 450)
-MainPanel.Position = UDim2.new(0, 160, 0.1, 0)
-MainPanel.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-MainPanel.Visible = true
-
-local UICornerMain = Instance.new("UICorner", MainPanel)
-UICornerMain.CornerRadius = UDim.new(0, 8)
-
--- Hide button (X)
-local HideBtn = Instance.new("TextButton", MainPanel)
-HideBtn.Size = UDim2.new(0, 30, 0, 30)
-HideBtn.Position = UDim2.new(1, -35, 0, 5)
-HideBtn.Text = "X"
-HideBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
-HideBtn.TextColor3 = Color3.new(1,1,1)
-HideBtn.Font = Enum.Font.GothamBold
-HideBtn.TextSize = 14
-
-HideBtn.MouseButton1Click:Connect(function()
-    MainPanel.Visible = not MainPanel.Visible
+HideButton.MouseButton1Click:Connect(function()
+    MainFrame.Visible = false
 end)
 
--- Create buttons & panels
-for i, name in ipairs(Buttons) do
-    local Btn = Instance.new("TextButton", Sidebar)
-    Btn.Size = UDim2.new(1, 0, 0, 40)
-    Btn.Position = UDim2.new(0, 0, 0, 50 + (i - 1) * 45)
-    Btn.Text = name
-    Btn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+-- Show Button
+local ShowButton = Instance.new("ImageButton", ScreenGui)
+ShowButton.Size = UDim2.new(0, 50, 0, 50)
+ShowButton.Position = UDim2.new(0, 10, 0.5, -25)
+ShowButton.Image = "rbxassetid://13533617921" -- ganti ke Mahiru icon
+ShowButton.BackgroundTransparency = 1
+ShowButton.Visible = false
+
+ShowButton.MouseButton1Click:Connect(function()
+    MainFrame.Visible = true
+    ShowButton.Visible = false
+end)
+
+-- When hide
+HideButton.MouseButton1Click:Connect(function()
+    MainFrame.Visible = false
+    ShowButton.Visible = true
+end)
+
+-- Buttons
+local function createToggle(name, var)
+    local Btn = Instance.new("TextButton", MainFrame)
+    Btn.Size = UDim2.new(0.9, 0, 0, 40)
+    Btn.Position = UDim2.new(0.05, 0, 0, #MainFrame:GetChildren() * 45)
+    Btn.Text = name .. ": OFF"
+    Btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
     Btn.TextColor3 = Color3.new(1,1,1)
     Btn.Font = Enum.Font.Gotham
     Btn.TextSize = 14
 
-    local Panel = Instance.new("Frame", MainPanel)
-    Panel.Size = UDim2.new(1, 0, 1, 0)
-    Panel.Visible = false
-    Panels[name] = Panel
-
     Btn.MouseButton1Click:Connect(function()
-        for k, v in pairs(Panels) do
-            v.Visible = false
-        end
-        Panel.Visible = true
+        getgenv()[var] = not getgenv()[var]
+        Btn.Text = name .. ": " .. (getgenv()[var] and "ON" or "OFF")
     end)
 end
 
--- Example contents for each panel
-local function addToggle(panel, text, varName)
-    local Toggle = Instance.new("TextButton", panel)
-    Toggle.Size = UDim2.new(0.9, 0, 0, 40)
-    Toggle.Position = UDim2.new(0.05, 0, 0, #panel:GetChildren() * 45)
-    Toggle.Text = text .. ": OFF"
-    Toggle.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    Toggle.TextColor3 = Color3.new(1,1,1)
-    Toggle.Font = Enum.Font.Gotham
-    Toggle.TextSize = 14
+createToggle("Auto Farm", "AutoFarm")
+createToggle("Auto Boss", "AutoBoss")
+createToggle("Chest", "Chest")
+createToggle("ESP", "ESP")
 
-    Toggle.MouseButton1Click:Connect(function()
-        getgenv()[varName] = not getgenv()[varName]
-        Toggle.Text = text .. ": " .. (getgenv()[varName] and "ON" or "OFF")
-    end)
-end
-
--- Farming panel example
-addToggle(Panels["Farming"], "Auto Farm", "AutoFarm")
-addToggle(Panels["Farming"], "Auto Boss", "AutoBoss")
-addToggle(Panels["Farming"], "Chest", "Chest")
-addToggle(Panels["Farming"], "ESP", "ESP")
-
--- Main panel example
-local Info = Instance.new("TextLabel", Panels["Main"])
-Info.Size = UDim2.new(1, 0, 0, 30)
-Info.Text = "Welcome to yosaH4X!"
-Info.TextColor3 = Color3.new(1,1,1)
-Info.BackgroundTransparency = 1
-Info.Font = Enum.Font.GothamBold
-Info.TextSize = 18
-Info.Position = UDim2.new(0, 0, 0, 10)
-
--- Items panel example
-local ItemsInfo = Instance.new("TextLabel", Panels["Items"])
-ItemsInfo.Size = UDim2.new(1, 0, 0, 30)
-ItemsInfo.Text = "Your items will be listed here soon!"
-ItemsInfo.TextColor3 = Color3.new(1,1,1)
-ItemsInfo.BackgroundTransparency = 1
-ItemsInfo.Font = Enum.Font.Gotham
-ItemsInfo.TextSize = 14
-ItemsInfo.Position = UDim2.new(0, 0, 0, 10)
-
--- Setting panel example
-local SettingInfo = Instance.new("TextLabel", Panels["Setting"])
-SettingInfo.Size = UDim2.new(1, 0, 0, 30)
-SettingInfo.Text = "Setting config here."
-SettingInfo.TextColor3 = Color3.new(1,1,1)
-SettingInfo.BackgroundTransparency = 1
-SettingInfo.Font = Enum.Font.Gotham
-SettingInfo.TextSize = 14
-SettingInfo.Position = UDim2.new(0, 0, 0, 10)
-
--- Auto select first panel
-Panels["Main"].Visible = true
-
-print("✅ yosaH4X UI loaded successfully!")
+print("✅ yosaH4X UI loaded with draggable & hide feature!")
